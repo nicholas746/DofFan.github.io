@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP8266 Control</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        button {
+            font-size: 20px;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .on-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .off-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .status {
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Control ESP8266 via HiveMQ</h2>
+        <button class="on-btn" onclick="sendMessage('ON')">Turn ON</button>
+        <button class="off-btn" onclick="sendMessage('OFF')">Turn OFF</button>
+        <p id="status" class="status">Status: Disconnected</p>
+    </div>
+    
+    <script>
+        const broker = "wss://4f0979501d334e67b8f2d338aad8c50d.s1.eu.hivemq.cloud:8884/mqtt";
+        const options = {
+            username: "A7321",
+            password: "123456As",
+            protocolVersion: 4
+        };
+        const client = mqtt.connect(broker, options);
+        
+        client.on("connect", function () {
+            document.getElementById("status").innerText = "Status: Connected";
+            console.log("Connected to HiveMQ");
+        });
+        
+        function sendMessage(command) {
+            client.publish("home/lights", command);
+        }
+    </script>
+</body>
+</html>
